@@ -1,5 +1,5 @@
 {
-  "name": "draft-js-mention-plugin",
+  "name": "gateway-draft-js-mention-plugin",
   "version": "3.1.0",
   "description": "Mention Plugin for DraftJS",
   "author": {
