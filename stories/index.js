@@ -53,6 +53,7 @@ import CustomMentionEditor from './Mention/CustomMentionEditor';
 import CustomComponentMentionEditor from './Mention/CustomComponentMentionEditor';
 import MentionEditorWithCustomTrigger from './Mention/MentionEditorWithCustomTrigger';
 import MentionEditorWithWhitespaceSupport from './Mention/MentionEditorWithWhitespaceSupport';
+import MentionEditorWithNoSuggestion from './Mention/MentionEditorWithNoSuggestion';
 
 // SideToolbar
 import SimpleSideToolbarEditor from './SideToolbar/SimpleSideToolbarEditor';
@@ -127,7 +128,8 @@ storiesOf('Mention Plugin')
   .add('Editor with custom themed Mention Plugin', () => <CustomMentionEditor />)
   .add('Editor with Mention Plugin and custom themed Suggestions', () => <CustomComponentMentionEditor />)
   .add('Editor with mention trigger which needs to be escaped', () => <MentionEditorWithCustomTrigger />)
-  .add('Editor with support for matching suggestions with spaces', () => <MentionEditorWithWhitespaceSupport />);
+  .add('Editor with support for matching suggestions with spaces', () => <MentionEditorWithWhitespaceSupport />)
+  .add('Editor with component rendered when no suggestions', () => <MentionEditorWithNoSuggestion />);
 
 storiesOf('Side Toolbar Plugin')
   .add('Editor with SideToolbar Plugin', () => <SimpleSideToolbarEditor />)
