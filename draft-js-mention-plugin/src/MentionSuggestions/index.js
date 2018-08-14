@@ -16,6 +16,7 @@ export class MentionSuggestions extends Component {
       'MUTABLE',
     ]),
     entryComponent: PropTypes.func,
+    noSuggestionsComponent: PropTypes.func,
     onAddMention: PropTypes.func,
     suggestions: PropTypes.array,
   };
@@ -31,9 +32,9 @@ export class MentionSuggestions extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.suggestions.length === 0 && this.state.isActive) {
+    if ((nextProps.suggestions.length === 0 && !nextProps.noSuggestionsComponent) && this.state.isActive) {
       this.closeDropdown();
-    } else if (nextProps.suggestions.length > 0 && nextProps.suggestions !== this.props.suggestions && !this.state.isActive) {
+    } else if ((nextProps.suggestions.length > 0 || nextProps.noSuggestionsComponent) && nextProps.suggestions !== this.props.suggestions && !this.state.isActive) {
       this.openDropdown();
     }
   }
@@ -153,7 +154,7 @@ export class MentionSuggestions extends Component {
     // If none of the above triggered to close the window, it's safe to assume
     // the dropdown should be open. This is useful when a user focuses on another
     // input field and then comes back: the dropdown will show again.
-    if (!this.state.isActive && !this.props.store.isEscaped(this.activeOffsetKey) && this.props.suggestions.length > 0) {
+    if (!this.state.isActive && !this.props.store.isEscaped(this.activeOffsetKey) && (this.props.suggestions.length > 0 || this.props.noSuggestionsComponent)) {
       this.openDropdown();
     }
 
@@ -233,6 +234,7 @@ export class MentionSuggestions extends Component {
       this.props.entityMutability,
     );
     this.props.store.setEditorState(newEditorState);
+    this.lastSearchValue = undefined;
   };
 
   onMentionFocus = (index) => {
@@ -321,18 +323,11 @@ export class MentionSuggestions extends Component {
       positionSuggestions, // eslint-disable-line no-unused-vars
       mentionTrigger, // eslint-disable-line no-unused-vars
       mentionPrefix, // eslint-disable-line no-unused-vars
+      noSuggestionsComponent: NoSuggestions,
       ...elementProps } = this.props;
 
-    return React.cloneElement(
-      popoverComponent,
-      {
-        ...elementProps,
-        className: theme.mentionSuggestions,
-        role: 'listbox',
-        id: `mentions-list-${this.key}`,
-        ref: (element) => { this.popover = element; },
-      },
-      this.props.suggestions.map((mention, index) => (
+    const children = this.props.suggestions.length > 0
+      ? this.props.suggestions.map((mention, index) => (
         <Entry
           key={mention.id != null ? mention.id : mention.name}
           onMentionSelect={this.onMentionSelect}
@@ -346,6 +341,24 @@ export class MentionSuggestions extends Component {
           entryComponent={entryComponent || defaultEntryComponent}
         />
       ))
+      : (
+        <NoSuggestions
+          onMentionSelect={this.onMentionSelect}
+          searchValue={this.lastSearchValue}
+          theme={theme}
+        />
+      );
+
+    return React.cloneElement(
+      popoverComponent,
+      {
+        ...elementProps,
+        className: theme.mentionSuggestions,
+        role: 'listbox',
+        id: `mentions-list-${this.key}`,
+        ref: (element) => { this.popover = element; },
+      },
+      children
     );
   }
 }

@@ -1,35 +1,26 @@
 import React, { Component } from 'react';
-import { EditorState } from 'draft-js';
+import { ContentState, EditorState } from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
 import createMentionPlugin, { defaultSuggestionsFilter } from 'draft-js-mention-plugin';
 import editorStyles from './editorStyles.css';
 import mentionsStyles from './mentionsStyles.css';
 import mentions from './mentions';
 
-const positionSuggestions = ({ state, props }) => {
-  let transform;
-  let transition;
-
-  if (state.isActive && (props.suggestions.length > 0 || props.noSuggestionsComponent)) {
-    transform = 'scaleY(1)';
-    transition = 'all 0.25s cubic-bezier(.3,1.2,.2,1)';
-  } else if (state.isActive) {
-    transform = 'scaleY(0)';
-    transition = 'all 0.25s cubic-bezier(.3,1,.2,1)';
-  }
-
-  return {
-    transform,
-    transition,
-  };
-};
+const mentionPlugin = createMentionPlugin({
+  mentions,
+  entityMutability: 'IMMUTABLE',
+  mentionPrefix: '@',
+  supportWhitespace: true,
+  theme: mentionsStyles,
+});
+const { MentionSuggestions } = mentionPlugin;
+const plugins = [mentionPlugin];
 
 const Entry = (props) => {
   const {
     mention,
     theme,
     searchValue, // eslint-disable-line no-unused-vars
-    isFocused, // eslint-disable-line no-unused-vars
     ...parentProps
   } = props;
 
@@ -86,21 +77,8 @@ const NoSuggestions = (props) => {
 
 export default class CustomMentionEditor extends Component {
 
-  constructor(props) {
-    super(props);
-
-    this.mentionPlugin = createMentionPlugin({
-      mentions,
-      entityMutability: 'IMMUTABLE',
-      theme: mentionsStyles,
-      positionSuggestions,
-      mentionPrefix: '@',
-      supportWhitespace: true
-    });
-  }
-
   state = {
-    editorState: EditorState.createEmpty(),
+    editorState: EditorState.createWithContent(ContentState.createFromText('Mentioning an "@name" that does not exist will render a message to indicate no suggestions. Clicking on the no suggestions message will simulate adding it.')),
     suggestions: mentions,
   };
 
@@ -121,9 +99,6 @@ export default class CustomMentionEditor extends Component {
   };
 
   render() {
-    const { MentionSuggestions } = this.mentionPlugin;
-    const plugins = [this.mentionPlugin];
-
     return (
       <div className={editorStyles.editor} onClick={this.focus}>
         <Editor
