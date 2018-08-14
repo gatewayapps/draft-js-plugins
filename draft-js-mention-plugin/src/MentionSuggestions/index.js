@@ -234,6 +234,7 @@ export class MentionSuggestions extends Component {
       this.props.entityMutability,
     );
     this.props.store.setEditorState(newEditorState);
+    this.lastSearchValue = undefined;
   };
 
   onMentionFocus = (index) => {
