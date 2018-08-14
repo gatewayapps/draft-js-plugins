@@ -10,7 +10,7 @@ const positionSuggestions = ({ state, props }) => {
   let transform;
   let transition;
 
-  if (state.isActive && props.suggestions.length > 0) {
+  if (state.isActive && (props.suggestions.length > 0 || props.noSuggestionsComponent)) {
     transform = 'scaleY(1)';
     transition = 'all 0.25s cubic-bezier(.3,1.2,.2,1)';
   } else if (state.isActive) {
@@ -52,6 +52,32 @@ const Entry = (props) => {
           <div className={theme.mentionSuggestionsEntryTitle}>
             {mention.title}
           </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const NoSuggestions = (props) => {
+  const {
+    onMentionSelect,
+    searchValue,
+    theme,
+    ...parentProps
+  } = props;
+
+  return (
+    <div {...parentProps}>
+      <div
+        className={theme.mentionSuggestionsEntryContainer}
+        onMouseDown={(e) => e.preventDefault()}
+        onMouseUp={() => {
+          // Using a timeout to simulate making an API call or something else before adding the selection
+          window.setTimeout(() => onMentionSelect({ name: searchValue }), 1000);
+        }}
+      >
+        <div className={theme.mentionSuggestionsEntry}>
+          No suggestions for &quot;{searchValue}&quot;
         </div>
       </div>
     </div>
@@ -110,6 +136,7 @@ export default class CustomMentionEditor extends Component {
           onSearchChange={this.onSearchChange}
           suggestions={this.state.suggestions}
           entryComponent={Entry}
+          noSuggestionsComponent={NoSuggestions}
         />
       </div>
     );

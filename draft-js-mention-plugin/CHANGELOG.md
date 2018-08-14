@@ -3,6 +3,9 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.2.0
+- Added optional `noSuggestionsComponent` to be rendered when there are no matching suggestions
+
 ## 3.1.0
 - Added `supportWhitespace` option to allow more precise matching of mentions containing spaces
 

@@ -3,6 +3,7 @@ import { ContentState, EditorState } from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
 import createMentionPlugin, { defaultSuggestionsFilter } from 'draft-js-mention-plugin';
 import editorStyles from './editorStyles.css';
+import mentionsStyles from './mentionsStyles.css';
 import mentions from './mentions';
 
 const mentionPlugin = createMentionPlugin({
@@ -10,6 +11,7 @@ const mentionPlugin = createMentionPlugin({
   entityMutability: 'IMMUTABLE',
   mentionPrefix: '@',
   supportWhitespace: true,
+  theme: mentionsStyles,
 });
 const { MentionSuggestions } = mentionPlugin;
 const plugins = [mentionPlugin];
@@ -60,7 +62,10 @@ const NoSuggestions = (props) => {
       <div
         className={theme.mentionSuggestionsEntryContainer}
         onMouseDown={(e) => e.preventDefault()}
-        onMouseUp={() => window.setTimeout(() => onMentionSelect({ name: searchValue }), 1000)}
+        onMouseUp={() => {
+          // Using a timeout to simulate making an API call or something else before adding the selection
+          window.setTimeout(() => onMentionSelect({ name: searchValue }), 1000);
+        }}
       >
         <div className={theme.mentionSuggestionsEntry}>
           No suggestions for &quot;{searchValue}&quot;
@@ -73,7 +78,7 @@ const NoSuggestions = (props) => {
 export default class CustomMentionEditor extends Component {
 
   state = {
-    editorState: EditorState.createWithContent(ContentState.createFromText('Type a "@first last" name, mispelling the last name will drop the match')),
+    editorState: EditorState.createWithContent(ContentState.createFromText('Mentioning an "@name" that does not exist will render a message to indicate no suggestions. Clicking on the no suggestions message will simulate adding it.')),
     suggestions: mentions,
   };
 

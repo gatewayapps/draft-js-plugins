@@ -175,6 +175,10 @@ export default class App extends Component {
             <span className={styles.paramName}>mentionComponent</span>
             <span>If provided the passed component is used to render a Mention. It receives the following props: entityKey, mention, className & decoratedText</span>
           </div>
+          <div className={styles.param}>
+            <span className={styles.paramName}>noSuggestionsComponent</span>
+            <span>If provided the passed component is rendered when there is a search value but no matching mentions. It receives the following props: onMentionSelect, searchValue, & theme</span>
+          </div>
           <Heading level={3}>MentionSuggestions</Heading>
           <div>
             The MentionSuggestions component is part of the plugin and should placed somewhere in the
